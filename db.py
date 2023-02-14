@@ -141,6 +141,37 @@ def get_order_by_stuId(stuId:str):
     db.close()
     return rows
 
+#UpdatePaidStatus
+def update_paid_status(orderUser:str, paid:bool):
+    db = sqlite3.connect('static/data/data.db')
+    cur = db.cursor()
+    cur.execute(f"UPDATE orderData SET paid = '{paid}' WHERE orderUser = '{orderUser}';")
+    cur.execute("SELECT * FROM orderData;")
+    rows = cur.fetchall()
+    db.commit()
+    db.close()
+    return rows
+
+#GetPaidStatus
+def get_paid_status(orderUser:str):
+    db = sqlite3.connect('static/data/data.db')
+    cur = db.cursor()
+    cur.execute(f"SELECT paid FROM orderData WHERE orderUser = '{orderUser}';")
+    rows = cur.fetchall()
+    db.commit()
+    db.close()
+    try:
+        if rows[0][0] == "True" or "False":
+            return rows[0][0]
+        else:
+            return None
+    except:
+        pass
+    
+
+
+
+
 #UserData
 
 #Create
@@ -180,6 +211,19 @@ def get_cadres_by_stuId(stuId:str):
         role = rows[0][1]
     db.close()
     return role
+#checkCadres
+def check_cadres(stuId:str):
+    db = sqlite3.connect('static/data/data.db')
+    cur = db.cursor()
+    cur.execute(f"SELECT * FROM cadresData WHERE stuId == '{stuId}';")
+    rows = cur.fetchall()
+    db.close()
+    if rows == []:
+        return False
+    else:
+        return True
+
+print(check_cadres("s1111032015"))
 
 #Else
 

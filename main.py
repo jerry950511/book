@@ -183,6 +183,10 @@ def place_order():
 
     if stuId != None and token != None:
         if check_token(stuId,token):
+            if get_paid_status(stuId) == "True":
+                return jsonify({"status":"error","message":"已付款"})
+            else:
+                pass
             delete_order(stuId)
             data = add_order(orderId,stuId,chinese,math,programmingDesign,electric,mobileApplication,biology,digitalLogicDesignExperience,electricExperience,english,False)
             return jsonify({"data":data , "status":"success"})
@@ -202,6 +206,27 @@ def get_order_stuid():
             return jsonify({"data":get_order_by_stuId("") , "status":"success" , "bookName":get_book()})
     else:
         return jsonify({"data":get_order_by_stuId("") , "status":"success" , "bookName":get_book()})
+
+@app.route("/api/update_paid_status", methods=['POST'])
+def update_status_of_paid():
+    orderUser = request.form.get('orderUser')
+    stuId = request.cookies.get('stuId')
+    token = request.cookies.get('token')
+    if stuId != None and token != None:
+        if check_token(stuId,token):
+            if check_cadres(stuId):
+                return jsonify({"data":update_paid_status(orderUser,True) , "status":"success"})
+            else:
+                return jsonify({"status":"error","message":"not cadres"})
+        else:
+            return jsonify({"status":"error","message":"token error"})
+    else:
+        return jsonify({"status":"error","message":"no cookie"})
+
+@app.route("/api/get_paid_status", methods=['GET'])
+def get_status_of_paid():
+    orderUser = request.form.get('orderUser')
+    return jsonify(get_paid_status(orderUser))
 
 #run server
 if __name__ == "__main__":
