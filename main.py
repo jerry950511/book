@@ -164,7 +164,7 @@ def get_order():
 
 @app.route("/api/get_book_info", methods=['GET'])
 def get_book_info():
-    return get_book()
+    return jsonify(get_book())
 
 @app.route("/place_order", methods=['POST'])
 def place_order():
